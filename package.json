@@ -1,7 +1,7 @@
 {
-  "name": "authentication",
+  "name": "iv4pm",
   "version": "1.0.0",
-  "description": "using node + json web token for user authentiaction",
+  "description": "rest endpoint",
   "main": "index.js",
   "engines": {
     "node": "14.x"

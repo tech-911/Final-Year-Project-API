@@ -1,6 +1,5 @@
 const express = require("express");
-const authRoute = require("./routes/auth");
-const userActionsRoute = require("./routes/userActions");
+const commandRoute = require("./routes/commandRoute");
 const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
@@ -28,7 +27,6 @@ mongoose
 //Middleware
 app.use(express.json());
 // app.use(express.urlencoded({ extended: true })); //middleware for parsing postbody format to object format
-app.use("/api/user", authRoute);
-app.use("/api/useraction", userActionsRoute);
+app.use("/api/command", commandRoute);
 // app.use("/api/posts", postRoute);
 app.listen(4000);
