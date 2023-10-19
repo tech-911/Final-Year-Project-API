@@ -1,4 +1,61 @@
 const { Command } = require("../model/Command");
+const { Users } = require("../model/Users");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
+// -----------------------Authentication---------------------------------
+
+const createUser = async (req, res) => {
+  const { role, accessCode } = req.body;
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(accessCode, salt);
+
+  try {
+    const user = await Users.findOne({ role: role });
+    if (user) {
+      user.accessCode = hashedPassword;
+      await user.save();
+    } else {
+      const newUser = new Users({ role: role, accessCode: hashedPassword });
+      await newUser.save();
+      res.send("new user created");
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(400).send({ message: err });
+  }
+};
+const login = async (req, res) => {
+  const { role, accessCode } = req.body;
+  try {
+    const user = await Users.findOne({ role: role });
+    if (user) {
+      const validPassword = await bcrypt.compare(accessCode, user.accessCode);
+      if (!validPassword) return res.status(400).send("Invalid code");
+
+      // Creating jwt token
+      const jwtSecretKey = process.env.TOKEN_SECRET;
+      const token = jwt.sign({ _id: user._id }, jwtSecretKey);
+      let newUser = { user, token };
+      res.header("auth-token", token).send(newUser);
+    } else {
+      res.status(400).send("Unrecognized User");
+    }
+  } catch (err) {
+    console.log(err);
+    res.send({ err: err });
+  }
+};
+const userList = async (req, res) => {
+  const users = await Users.find({});
+  try {
+    res.send(users);
+  } catch (err) {
+    console.log(err);
+    res.send({ err: err });
+  }
+};
+// --------------------------End------------------------------
 
 const sendCommand = async (req, res) => {
   const { command } = req.body;
@@ -6,19 +63,25 @@ const sendCommand = async (req, res) => {
     case "forward":
       console.log("forward");
       break;
-
     case "backward":
       console.log("backward");
       break;
-
+    case "high":
+      console.log("high");
+      break;
+    case "mid":
+      console.log("mid");
+      break;
+    case "low":
+      console.log("low");
+      break;
     case "stop":
       console.log("stop");
       break;
-
     default:
       return res
         .status(400)
-        .send("invalid command try either: forward, backward or stop");
+        .send("invalid command try either: forward, backward, high, mid, low or stop");
   }
 
   try {
@@ -117,4 +180,7 @@ module.exports = {
   sendFeedback,
   getFeedback,
   resetFeedback,
+  createUser,
+  login,
+  userList,
 };
