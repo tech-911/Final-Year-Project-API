@@ -31,7 +31,10 @@ const login = async (req, res) => {
     const user = await Users.findOne({ role: role });
     if (user) {
       const validPassword = await bcrypt.compare(accessCode, user.accessCode);
-      if (!validPassword) return res.status(400).send("Invalid code");
+      if (!validPassword)
+        return res
+          .status(400)
+          .send({ status: "00", message: "wrong password" });
 
       // Creating jwt token
       const jwtSecretKey = process.env.TOKEN_SECRET;
@@ -39,7 +42,7 @@ const login = async (req, res) => {
       let newUser = { user, token };
       res.header("auth-token", token).send(newUser);
     } else {
-      res.status(400).send("Unrecognized User");
+      res.status(400).send({ status: "00", message: "Unrecognized User" });
     }
   } catch (err) {
     console.log(err);
@@ -81,7 +84,9 @@ const sendCommand = async (req, res) => {
     default:
       return res
         .status(400)
-        .send("invalid command try either: forward, backward, high, mid, low or stop");
+        .send(
+          "invalid command try either: forward, backward, high, mid, low or stop"
+        );
   }
 
   try {
