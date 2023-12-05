@@ -136,9 +136,12 @@ const resetFeedback = async (req, res) => {
       docs.command = "stop";
       docs.feedback = "done";
       await docs.save();
-      res.send("command reset");
+      res.send({ status: "200", message: "command reset" });
     } else {
-      res.status(400).send("Error, no command has ever been made");
+      res.status(400).send({
+        status: "400",
+        message: "Error, no command has ever been made",
+      });
     }
   } catch (err) {
     res.status(400).send({ err: `${err}` });
