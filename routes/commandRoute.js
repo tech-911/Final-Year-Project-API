@@ -17,9 +17,9 @@ router.post("/createUser", createUser);
 router.post("/login", login);
 router.get("/getUsers", userList);
 //------------------End-------------------
-router.post("/postCommand", sendCommand);
-router.get("/getCommand", getCommand);
-router.post("/postFeedback", sendFeedback);
-router.get("/getFeedback", getFeedback);
-router.get("/refresh", resetFeedback);
+router.get("/getCommand", getCommand); //----------for hardware--------------
+router.post("/postFeedback", sendFeedback); //----------for hardware--------------
+router.post("/postCommand", verify, sendCommand);
+router.get("/getFeedback", verify, getFeedback);
+router.get("/refresh", verify, resetFeedback);
 module.exports = router;
