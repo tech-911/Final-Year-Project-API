@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const verify = require("../verification/verifyToken");
+// const verify = require("../verification/verifyToken");
 const {
   sendCommand,
   getCommand,
@@ -19,7 +19,7 @@ router.get("/getUsers", userList);
 //------------------End-------------------
 router.get("/getCommand", getCommand); //----------for hardware--------------
 router.post("/postFeedback", sendFeedback); //----------for hardware--------------
-router.post("/postCommand", verify, sendCommand);
-router.get("/getFeedback", verify, getFeedback);
-router.get("/refresh", verify, resetFeedback);
+router.post("/postCommand", sendCommand);
+router.get("/getFeedback", getFeedback);
+router.get("/refresh", resetFeedback);
 module.exports = router;
